@@ -54,7 +54,7 @@ class ProductManager {
       }
   
       //Esta faltando algun campo obligatorio
-      if (!checkFiels) {
+      if (!checkFiels(product,this.fields)) {
         return "Fields missing";
       }
   
