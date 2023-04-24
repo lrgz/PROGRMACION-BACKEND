@@ -2,6 +2,9 @@
 
 Este repositorio contiene las entregas de la _comision 51380_
 
+<br>
+<br>
+
 ## Primera pre-entrega 🚀
 
 Se debera realizar una clase llamada _ProductManager_ que gestione un conjunto de productos
@@ -35,8 +38,34 @@ Se debera realizar una clase llamada _ProductManager_ que gestione un conjunto d
           “Not found”
 
 
+<br>
+<br>
+
+## Segunda pre-entrega 🚀
+
+Se debera realizar una clase llamada _ProductManager_ que gestione un conjunto de productos
+
+- Debe contar con un método _updateProduct_ el cual debe buscar en el
+  arreglo el producto que coincida con el id
+
+        - En caso de no coincidir ningún id, mostrar en consola un error  
+          “Not found”
+        - En caso de estar todo ok se va a mostar en consola el siguiente mensaje
+          “Product update”
 
 
+- Debe contar con un método _deleteProduct_ el cual debe buscar en el
+  arreglo el producto que coincida con el id
+
+        - En caso de no coincidir ningún id, mostrar en consola un error  
+          “Not found” 
+        - En caso de estar todo ok se va a mostar en consola el siguiente mensaje
+          “Product delete”
+
+- Se incorpora el manejo de archico para almacenar los productos
+
+<br>
+<br>
 
 ## Construido con 🛠️
 
@@ -47,6 +76,8 @@ Para la construccion de este proeycto se utilizaron lasssss siguientes herramien
 * [JavaScript](https://developer.mozilla.org/es/docs/Web/JavaScript)
 * [vsCode](https://code.visualstudio.com/)
 
+<br>
+<br>
 
 ## Autor(es) ✒️
 
@@ -54,7 +85,8 @@ Para la construccion de este proeycto se utilizaron lasssss siguientes herramien
 * **Rodrigo Zerrezuela** - *Trabajo Inicial / Proyecto * - [lrgz](https://github.com/lrgz)
 
 
-
+<br>
+<br>
 
 ---
 ⌨️ por [lrgz](https://github.com/lrgz) 😊
