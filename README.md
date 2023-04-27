@@ -67,11 +67,33 @@ Se debera realizar una clase llamada _ProductManager_ que gestione un conjunto d
 <br>
 <br>
 
+
+## Tercera pre-entrega 🚀
+
+Realizar un proyecto de servidor basado en node.js que utilice el módulo express e implemente los siguientes endpoints en el puerto 8080:
+
+
+- Ruta ‘/products’, la cual debe leer el archivo de productos y devolverlos dentro de un objeto agregar el soporte para recibir por query 
+  param el valor ?limit= el cual recibirá un límite de resultados
+
+        - Si no se recibe query de límite, se devolverán todos los productos
+        - Si se recibe un límite, sólo devolver el número de productos solicitados
+        
+
+- Ruta ‘/products/:pid’, la cual debe recibir por req.params el pid (product Id), y devolver sólo el producto solicitado, 
+  en lugar de todos los productos
+
+
+<br>
+<br>
+
+
 ## Construido con 🛠️
 
 Para la construccion de este proeycto se utilizaron lasssss siguientes herramientas : 
 
 * [Nodejs](https://nodejs.org/en) 
+* [ExpressJS](https://expressjs.com/) 
 * [ECMAScript](https://tc39.es/ecma262/)
 * [JavaScript](https://developer.mozilla.org/es/docs/Web/JavaScript)
 * [vsCode](https://code.visualstudio.com/)
