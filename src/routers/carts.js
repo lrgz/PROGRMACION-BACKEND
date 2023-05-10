@@ -15,7 +15,7 @@ const cm = new CartManager("./src/storage/carts.json")
 */
 router.get('/:id', async (req, res) => {
     try{
-        res.status(200).send({status: 'succes', payload: await cm.getCartById(req.params.cid)})
+        res.status(200).send({status: 'succes', payload: await cm.getCartById(req.params.id)})
     }catch(error){  
         res.status(400).send({status: 'error', message: error.message})
     }

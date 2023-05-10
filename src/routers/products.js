@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try{
         await pm._initFS();
-        const product = pm.getProductById(req.params.id)
+        const product = await pm.getById(req.params.id)
         res.status(200).send({status: 'succes', payload: product})
     }catch(error){
         res.status(400).send({status: 'error', message: error.message})
