@@ -33,19 +33,19 @@ class CartManager{
 
     async loadCarts(){
         try{
-            if(fs.stat(this.path)){
-                const fileData = await fs.readFile(this.path, 'utf-8');
+            if(fs.existSync(this.path)){
+                const fileData = await fs.promises.readFile(this.path, 'utf-8');
                 this.carts = JSON.parse(fileData)
             }
         }catch (error){
-            fs.writeFile(this.path, JSON.stringify(this.carts), 'utf-8')
+            await fs.promises.writeFile(this.path, JSON.stringify(this.carts), 'utf-8')
         }
     }
 
     async saveCarts(){
         try{
             const jsonData = JSON.stringify(this.carts)
-            await fs.writeFile(this.path, jsonData)
+            await fs.promises.writeFile(this.path, jsonData)
         }catch (error){
             throw new Error(error.message)
         }
@@ -74,7 +74,7 @@ class CartManager{
     }
 
     async productExists(id){
-        const fileData = await fs.readFile("./src/data/products.json", 'utf-8');
+        const fileData = await fs.promises.readFile("./src/storage/products.json", 'utf-8');
         const products = JSON.parse(fileData)
         const productById = products.find((product) => product.id == id)
 
