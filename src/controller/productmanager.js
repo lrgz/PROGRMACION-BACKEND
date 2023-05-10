@@ -19,7 +19,7 @@ class ProductManager {
   /**
    * fields  atributo que contiene los campos obligatorios del objeto
    */
-  fields = ["title", "description", "price", "thumbnail", "code", "stock"]; //lista de campos obligatorios
+  fields = ["title", "description", "code","price","status","stock","category"]; //lista de campos obligatorios
 
   /**
    * Constructor  metodo de inicial del objeto
@@ -30,7 +30,7 @@ class ProductManager {
     this.products = []; // array de productos
     this.id = 1; // id unico de identificacion de producto autoincremental
     this.path = file; // ruta y nombre del archivo de productos
-    this._initFS(); // creo el archivo de producto si es necesario y cargo el atributo products
+     // creo el archivo de producto si es necesario y cargo el atributo products
   }
 
   /**
@@ -42,21 +42,23 @@ class ProductManager {
    *           - 'Product added' - proceso exitoso se agrego el producto
    */
   async addProduct(product) {
-    /**
+     /**
      * SECCION DE VERIFICACIONES
      */
+
 
     //verifico codigo producto unico
     let verifyCode = this.products.find((p) => p.code === product.code);
 
     // ya exite un producto con el codigo informado
     if (verifyCode) {
-      return "This code already exists";
+      throw new Error ("This code already exists");         
     }
 
     //Esta faltando algun campo obligatorio
     if (!this._checkFiels(product, this.fields)) {
-      return "Fields missing";
+      throw new Error  ("Fields missing")
+     
     }
 
     /**
@@ -70,7 +72,7 @@ class ProductManager {
     //grabo en el archivo
     await this._saveDataFS(this.products);
 
-    return "Product added";
+    return "OK"
   }
 
   /**
