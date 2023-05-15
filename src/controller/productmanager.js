@@ -86,7 +86,7 @@ class ProductManager {
     let answer =
       this.products.length === 0
         ? "Empty list of products"
-        : JSON.stringify(this.products);
+        :this.products;
     return answer;
   }
 
@@ -188,7 +188,9 @@ class ProductManager {
    */
   async _getDataFS() {
     const fileContent = await fs.promises.readFile(this.path, "utf8");
-    return JSON.parse(fileContent);
+    const result = JSON.parse(fileContent)    
+    this.id=this._getMax(result,'id') + 1
+    return result;
   }
 
   /**
@@ -215,6 +217,15 @@ class ProductManager {
     }
     return true;
   }
+
+   _getMax(arr, prop) {
+    var max;
+    for (var i=0 ; i<arr.length ; i++) {
+        if (max == null || parseInt(arr[i][prop]) > parseInt(max[prop]))
+            max = arr[i];
+    }
+    return max.id;
+}
 }
 
 module.exports = ProductManager;
