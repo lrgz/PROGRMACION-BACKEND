@@ -2,27 +2,29 @@
  * SECCION IMPORT
  */
 const express = require('express')
-const ProductManager = require('../controller/productmanager')  
+const ProductManager = require('../dao/mongo/productMongo')  
 
 /**
  * INIT PRODCUTO
  */
 const router = express.Router()
-const pm = new ProductManager("./src/storage/products.json")
+
 
 /***
 * RUTAS
 */
 router.get('/', async(req, res) => {
-    await pm._initFS()
     
-    res.render('home', {
-        
-        products: await pm.getProducts()
+    res.render('home', {        
+        products: await ProductManager.getProducts()        
     })
 })
 router.get('/realtimeproducts', (req, res) => {
     res.render('realTimeProducts', {})
+})
+
+router.get('/chat', (req,res) => {
+    res.render('chat', {})
 })
 
 /***

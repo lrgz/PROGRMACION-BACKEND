@@ -8,7 +8,8 @@ const productRouter = require('./routers/products')
 const cartRouter = require('./routers/carts')
 const viewsRouter = require('./routers/views')
 const socketProduct = require('./utils/socketProducts')
-
+const socketChat = require('./utils/socketChat')
+const objectConfig = require('./config/config')
 
 /**
  * DEFINO PUERTO DE LA APP
@@ -19,7 +20,7 @@ const PORT = 8080
  * CONFIGURO LA APP
  */
 const app = express()
-
+objectConfig.connectDB()
 
 /*** 
 * ARRANQUE APLICACION
@@ -57,3 +58,4 @@ app.use("*", (req, res) => {
 
 
 socketProduct(ioSocket)
+socketChat(ioSocket)

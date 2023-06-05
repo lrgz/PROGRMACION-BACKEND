@@ -1,26 +1,26 @@
 /**
  * SECCION IMPORT
  */
-const ProductManager = require('../controller/productmanager') 
-const pm = new ProductManager("./src/storage/products.json")
+const ProductManager = require('../dao/mongo/productMongo') 
+
 
 /***
  * SECCION DEL SOCKET 
  */
 const socketProduct = async (ioSocket) => {
-    await pm._initFS()
-    const products = await pm.getProducts()
 
+    const products = await ProductManager.getProducts()
+    
     ioSocket.on('connection', socket => {
 
         socket.emit('products', products)
 
         socket.on('addProduct', async data => {
-            await pm.addProduct(data)
+            await ProductManager.addProduct(data)
         })
 
         socket.on('deleteProduct', async data => {
-            await pm.deleteProduct(data)
+            await ProductManager.deleteProduct(data)
         })
     })
 }
