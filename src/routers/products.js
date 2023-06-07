@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
     try{
         const product = req.body                        
         await ProductManager.addProduct(product)                
-        res.status(200).send({status: 'succes', payload: ProductManager.products})
+        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
     }catch (error){
         res.status(400).send({status: 'error', message: error.message})
     }
@@ -38,7 +38,7 @@ router.put('/:id', async (req, res) => {
     try{
         const product = req.body
         await ProductManager.updateProduct(req.params.id, product)
-        res.status(200).send({status: 'succes', payload: ProductManager.products})
+        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
     }catch (Error){
         res.status(400).send({status: 'error', message: Error.message})
     }
@@ -46,7 +46,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:pid', async (req, res) => {
     try{
         await ProductManager.deleteProduct(Number(req.params.pid))
-        res.status(200).send({status: 'succes', payload: ProductManager.products})
+        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
     }catch(error){
         res.status(400).send({status: 'error', message: error.message})
     }
