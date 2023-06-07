@@ -17,10 +17,14 @@ const socketProduct = async (ioSocket) => {
 
         socket.on('addProduct', async data => {
             await ProductManager.addProduct(data)
+            const products = await productManager.getProducts()
+            socket.emit('products', products)
         })
 
         socket.on('deleteProduct', async data => {
             await ProductManager.deleteProduct(data)
+            const products = await productManager.getProducts()
+            socket.emit('products', products)            
         })
     })
 }
