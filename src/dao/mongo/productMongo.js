@@ -5,9 +5,9 @@ class ProductManagerMongo {
         this.productModel = model
     }
 
-    async getProducts(){
+    async getProducts(query, options){
         try{            
-            return await productModel.find({}).lean()
+            return await productModel.paginate(query, options)
         }catch(err){
             return new Error(err)
         }

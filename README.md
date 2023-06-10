@@ -5,37 +5,18 @@ Este repositorio contiene las entregas de la _comision 51380_
 <br>
 <br>
 
-## Primera pre-entrega 🚀
+## Segunda pre-entrega  de tu Proyecto final 🚀
 
-Se debera realizar una clase llamada _ProductManager_ que gestione un conjunto de productos
+Deberás entregar el proyecto que has venido armando, cambiando persistencia en base de datos, 
+además de agregar algunos endpoints nuevos a tu ecommerce
 
-- Debe crearse desde su constructor con el elemento products, el cual 
-  será un arreglo vacío
+- Contarás con Mongo como sistema de persistencia principal
 
-- Cada producto que gestione debe contar con las propiedades:
-        
-        - title (nombre del producto)
-        - description (descripción del producto)
-        - price (precio)
-        - thumbnail (ruta de imagen)
-        - code (código identificador)
-        - stock (número de piezas disponibles)
+- Tendrás definidos todos los endpoints para poder trabajar con productos y carritos.
 
-- Debe contar con un método “addProduct” el cual agregará un producto
-  al arreglo de productos inicial
+- Profesionalizar las consultas de productos con filtros, paginación y ordenamientos
 
-        - Validar que no se repita el campo “code” y que todos los campos
-          sean obligatorios
-        - Al agregarlo, debe crearse con un id autoincrementable
-
-- Debe contar con un método “getProducts” el cual debe devolver 
-  el arreglo con todos los productos creados hasta ese momento
-
-- Debe contar con un método “getProductById” el cual debe buscar en el
-  arreglo el producto que coincida con el id
-
-        - En caso de no coincidir ningún id, mostrar en consola un error  
-          “Not found”
+- Profesionalizar la gestión de carrito para implementar los últimos conceptos vistos.
 
 
 <br>
@@ -84,6 +65,34 @@ Realizar un proyecto de servidor basado en node.js que utilice el módulo expres
   en lugar de todos los productos
 
 ## Primera Practica Integradora 🚀
+
+Continuar sobre el proyecto que has trabajado para tu ecommerce y configurar los siguientes elementos
+
+
+- Agregar el modelo de persistencia de Mongo y mongoose a tu proyecto.
+
+- Crear una base de datos llamada “ecommerce” dentro de tu Atlas, crear sus colecciones “carts”, “messages”, “products” y sus     
+  respectivos schemas.
+
+- Separar los Managers de fileSystem de los managers de MongoDb en una sola carpeta “dao”. Dentro de dao, agregar también una 
+  carpeta “models” donde vivirán los esquemas de MongoDB. La estructura deberá ser igual a la vista en esta clase
+
+- Contener todos los Managers (FileSystem y DB) en una carpeta llamada “Dao”
+
+- Reajustar los servicios con el fin de que puedan funcionar con Mongoose en lugar de FileSystem
+
+- __NO ELIMINAR__ FileSystem de tu proyecto.
+
+- Corroborar la integridad del proyecto para que todo funcione como lo ha hecho hasta ahora.
+
+
+
+
+
+<br>
+<br>
+
+# Primera Practica Integradora 🚀
 
 Continuar sobre el proyecto que has trabajado para tu ecommerce y configurar los siguientes elementos
 

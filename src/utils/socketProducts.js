@@ -1,3 +1,4 @@
+
 /**
  * SECCION IMPORT
  */
@@ -18,7 +19,7 @@ const socketProduct = async (ioSocket) => {
         socket.on('addProduct', async data => {
             await ProductManager.addProduct(data)
             const products = await productManager.getProducts()
-            socket.emit('products', products)
+            socket.emit('products', products)            
         })
 
         socket.on('deleteProduct', async data => {
