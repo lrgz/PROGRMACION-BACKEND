@@ -1,3 +1,5 @@
+product
+
 /**
  * SECCION IMPORT
  */
@@ -12,10 +14,45 @@ const router = express.Router()
 * RUTAS
 */
 router.get('/', async (req, res) => {    
-    const products = await productManager.getProducts()
-    const { limit } = req.query
-    limit ? res.status(200).send({status: 'succes', payload: products.slice(0, limit)}) : res.status(200).send({status: 'succes', payload: products})
+
+    try{
+        let query = {}
+        if(req.query.query === undefined){ // query undefined
+            query = {}
+        }else if(req.query.query === 'true'){ // status === true
+            query.status = true
+        }else if(req.query.query === 'false'){ // status === false
+            query.status = false
+        }else{ // category === req.query.params
+            query.category = req.query.query
+        }
+
+        let sort = null
+        if (req.query.sort === "asc") { // asc or desc
+            sort = { price: 1 };
+        } else if (req.query.sort === "desc") {
+            sort = { price: -1 };
+        }
+
+        const options = {
+            limit: req.query.limit ? parseInt(req.query.limit) : 10,
+            page: req.query.page ? parseInt(req.query.page) : 1,
+            sort: sort
+        }
+
+
+        const products = await productManager.getProducts(query, options)
+        const { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = products
+        hasPrevPage === false ? prevLink = null : prevLink = `/api/products?page=${parseInt(prevPage)}`
+        hasNextPage === false ? nextLink = null : nextLink = `/api/products?page=${parseInt(nextPage)}`
+
+        res.status(200).send({status: 'succes', payload: docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage, prevLink, nextLink })
+    }catch(error){
+        res.status(400).send({status: 'error', message: error.message})
+    }
+
 })
+
 router.get('/:id', async (req, res) => {
     try{        
 
@@ -25,6 +62,7 @@ router.get('/:id', async (req, res) => {
         res.status(400).send({status: 'error', message: error.message})
     }
 })
+
 router.post('/', async (req, res) => {
     try{
         const product = req.body                        
