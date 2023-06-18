@@ -3,7 +3,7 @@
  */
 const express = require('express')
 const ProductManager = require('../dao/mongo/productMongo')  
-const cartManager = require('../dao/mongo/cart.mongo') 
+const cartManager = require('../dao/mongo/cartMongo') 
 
 /**
  * INIT PRODCUTO
@@ -14,6 +14,7 @@ const router = express.Router()
 /***
 * RUTAS
 */
+
 
 router.get('/realtimeproducts', (req, res) => {
     res.render('realTimeProducts', {})
@@ -56,7 +57,7 @@ router.get('/products', async (req, res) => {
             sort: sort
         }
 
-        const products = await productManager.getProducts(query, options)
+        const products = await ProductManager.getProducts(query, options)
         const { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = products
         
         let prevLink = ""

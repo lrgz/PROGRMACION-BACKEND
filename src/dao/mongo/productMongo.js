@@ -6,7 +6,7 @@ class ProductManagerMongo {
     }
 
     async getProducts(query, options){
-        try{            
+        try{                        
             return await productModel.paginate(query, options)
         }catch(err){
             return new Error(err)
@@ -15,7 +15,7 @@ class ProductManagerMongo {
 
     async getById(pid){
         try{
-            return await productModel.findOne({_id: pid})
+            return await productModel.findOne({_id: pid}).lean()
         }catch(err){
             return new Error(err)
         }

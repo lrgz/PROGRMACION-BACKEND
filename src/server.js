@@ -34,8 +34,15 @@ const severHttp = app.listen(PORT, () => {
  * SOCKET
  */
 const ioSocket = new Server(severHttp)
-app.engine('handlebars', handlebars.engine())
+
 app.set('views', __dirname+'/views')
+const handlebarsConfig = handlebars.create({
+    runtimeOptions:{
+        allowProtoPropertiesByDefault: true
+    }
+})
+
+app.engine('handlebars', handlebarsConfig.engine)
 app.set('view engine', 'handlebars')
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
