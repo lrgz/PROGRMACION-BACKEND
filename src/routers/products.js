@@ -1,5 +1,3 @@
-product
-
 /**
  * SECCION IMPORT
  */
@@ -39,9 +37,8 @@ router.get('/', async (req, res) => {
             page: req.query.page ? parseInt(req.query.page) : 1,
             sort: sort
         }
-
-
-        const products = await productManager.getProducts(query, options)
+        
+        const products = await ProductManager.getProducts(query, options)
         const { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = products
         hasPrevPage === false ? prevLink = null : prevLink = `/api/products?page=${parseInt(prevPage)}`
         hasNextPage === false ? nextLink = null : nextLink = `/api/products?page=${parseInt(nextPage)}`
@@ -67,7 +64,7 @@ router.post('/', async (req, res) => {
     try{
         const product = req.body                        
         await ProductManager.addProduct(product)                
-        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
+        res.status(200).send({status: 'succes', payload: await ProductManager.getProducts()})
     }catch (error){
         res.status(400).send({status: 'error', message: error.message})
     }
@@ -76,7 +73,7 @@ router.put('/:id', async (req, res) => {
     try{
         const product = req.body
         await ProductManager.updateProduct(req.params.id, product)
-        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
+        res.status(200).send({status: 'succes', payload: await ProductManager.getProducts()})
     }catch (Error){
         res.status(400).send({status: 'error', message: Error.message})
     }
@@ -84,7 +81,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:pid', async (req, res) => {
     try{
         await ProductManager.deleteProduct(Number(req.params.pid))
-        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
+        res.status(200).send({status: 'succes', payload: await ProductManager.getProducts()})
     }catch(error){
         res.status(400).send({status: 'error', message: error.message})
     }

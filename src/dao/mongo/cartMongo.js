@@ -16,7 +16,7 @@ class CartManagerMongo{
 
     async getCarts(){
         try{
-            return await cartModel.find({})
+            return await cartModel.find({}).lean()
         }catch(err){
             return new Error(err)
         }
@@ -24,17 +24,16 @@ class CartManagerMongo{
 
     async getCartById(cid){
         try{
-            return await cartModel.findOne({_id: cid})
+            return await cartModel.findOne({_id: cid}).populate('products.product')
         }catch(err){
             return new Error(err)
         }
     }
 
     async addProductToCart(cid, pid){ // cid = cartId, pid= productId
-        const cart = await this.getCartById(cid)
-        const index = cart.products.findIndex(product => product._id === pid)
-
-        if (index === -1) { // product not found
+        const cart = await cartModel.findById(cid);
+        const indexProduct = cart.products.findIndex((item) => item._id == pid);
+        if (indexProduct === -1) { // product not found
             const update = { $push: { products: { _id: pid, quantity: 1 } } };
             await cartModel.updateOne({ _id: cid }, update);
         } else { // product found
@@ -47,9 +46,10 @@ class CartManagerMongo{
 
     async deleteProductFromCart(cid, pid){
         const cart = await cartModel.findOne({_id: cid})
-        const index = cart.products.findIndex(product => product.product == pid)
+        const indexProduct = cart.products.findIndex((item) => item._id == pid);
+        
 
-        if(index === -1){
+        if(indexProduct === -1){
             return null
         }else{
             const filter = { _id: cid };
@@ -68,10 +68,10 @@ class CartManagerMongo{
     }
 
     async updateQuantity(cid, pid, quantity){
-        const cart = await cartModel.findOne({_id: cid})
-        const index = cart.products.findIndex(product => product.product == pid)
+        const cart = await cartModel.findOne({_id: cid})        
+        const indexProduct = cart.products.findIndex((item) => item._id == pid);
 
-        if (index === -1 || quantity < 1) {
+        if (indexProduct === -1 || quantity < 1) {
             return null
         }else {
             const filter = { _id: cid, 'products.product': pid };
