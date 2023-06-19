@@ -1,6 +1,3 @@
-/**
- * SECCION IMPORT
- */
 const express = require('express')
 const ProductManager = require('../dao/mongo/productMongo') 
 const router = express.Router()
@@ -8,9 +5,6 @@ const router = express.Router()
 
 
 
-/***
-* RUTAS
-*/
 router.get('/', async (req, res) => {    
 
     try{

@@ -1,20 +1,19 @@
-/**
- * SECCION IMPORT
- */
 const express = require('express')
 const ProductManager = require('../dao/mongo/productMongo')  
 const cartManager = require('../dao/mongo/cartMongo') 
 
-/**
- * INIT PRODCUTO
- */
 const router = express.Router()
 
 
-/***
-* RUTAS
-*/
 
+
+router.get('/', (req, res) => {
+    if(req.session.user){
+        res.redirect('/products')
+    }else{
+        res.redirect('/login')
+    }
+})
 
 router.get('/realtimeproducts', (req, res) => {
     res.render('realTimeProducts', {})
@@ -26,6 +25,13 @@ router.get('/chat', (req,res) => {
 
 router.get('/products', async (req, res) => {
     try{
+        let user = ''
+        if(req.session.user){
+            user = req.session.user            
+        }else{
+            res.redirect('/login')
+        }
+
         if (req.query.page) {
             queryPage = parseInt(req.query.page);
             if (isNaN(queryPage) || queryPage < 1) {
@@ -72,9 +78,8 @@ router.get('/products', async (req, res) => {
         }else{ // if there isn't query values
             hasPrevPage === false ? prevLink = null : prevLink = `/products?page=${parseInt(prevPage)}&limit=${options.limit}&sort=${req.query.sort}`
             hasNextPage === false ? nextLink = null : nextLink = `/products?page=${parseInt(nextPage)}&limit=${options.limit}&sort=${req.query.sort}`
-        }
-
-        res.render('products', {status: 'succes', payload: docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage, prevLink, nextLink })
+        }        
+        res.render('products', {status: 'succes', payload: docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage, prevLink, nextLink, session: user  })
     }catch(error){
         res.render('products', {status: 'error', message: error.message})
     }
@@ -84,6 +89,14 @@ router.get('/cart/:cid', async(req,res) => {
     res.render('cart', {status: 'succes', payload: await cartManager.getCartById(req.params.cid)})
 })
 
+
+router.get('/login', async(req, res) => {
+    res.render('login', {})
+})
+
+router.get('/register', async(req, res) => {
+    res.render('register', {})
+})
 
 /***
 * EXPORTS

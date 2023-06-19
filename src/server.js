@@ -7,9 +7,17 @@ const { Server } = require('socket.io')
 const productRouter = require('./routers/products')
 const cartRouter = require('./routers/carts')
 const viewsRouter = require('./routers/views')
+const sessionsRouter = require('./routers/sessions')
+
 const socketProduct = require('./utils/socketProducts')
 const socketChat = require('./utils/socketChat')
+
 const objectConfig = require('./config/config')
+
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const mongoStore = require('connect-mongo') 
+
 
 /**
  * DEFINO PUERTO DE LA APP
@@ -36,6 +44,7 @@ const severHttp = app.listen(PORT, () => {
 const ioSocket = new Server(severHttp)
 
 app.set('views', __dirname+'/views')
+
 const handlebarsConfig = handlebars.create({
     runtimeOptions:{
         allowProtoPropertiesByDefault: true
@@ -44,9 +53,25 @@ const handlebarsConfig = handlebars.create({
 
 app.engine('handlebars', handlebarsConfig.engine)
 app.set('view engine', 'handlebars')
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/static', express.static(__dirname+'/public'))
+app.use(cookieParser())
+
+app.use(session({
+    store: mongoStore.create({                   
+        mongoUrl: 'mongodb+srv://userTest:ctrPdIc7sTCimSvx@ecommerce.zaf9sgy.mongodb.net/?retryWrites=true&w=majority',
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
+        ttl: 3600,
+    }),
+    secret: 'pwd123',
+    resave: true,
+    saveUninitialized: true
+}))
 
 /**
  * CONFIGURO LA RUTAS
@@ -54,6 +79,7 @@ app.use('/static', express.static(__dirname+'/public'))
 
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartRouter)
+app.use('/api/sessions', sessionsRouter)
 app.use('/', viewsRouter)
 
 

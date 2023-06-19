@@ -1,4 +1,12 @@
 <div>
+    <p>{{sessions}}</p>
+    {{#if session}}
+    <div class="flex justify-between items-center">
+        
+        <p class="font-semibold text-xl text-gray-700 my-2">Welcome {{session.first_name}} {{session.last_name}}, email: {{session.email}}, role: {{session.role}}</p>
+        <a href="/api/sessions/logout" class="my-2 bg-gray-700 hover:bg-gray-500 text-white font-medium uppercase py-1 px-2 rounded cursor-pointer">Logout</a>
+    </div>
+    {{/if}}
     <h1 class="font-semibold text-4xl text-gray-700 text-center uppercase my-5">Products</h1>
     <h2 class="font-semibold text-xl text-gray-700 text-center my-5">The products will be added to the cart: 648a517579b570790b33259e</h2>
     <ul class="mt-4">
@@ -58,4 +66,4 @@
     </ul>
 </div>
 <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js "></script>
-<script src="/static/js/products.js"></script>
+<script src="/static/js/product.js"></script>
