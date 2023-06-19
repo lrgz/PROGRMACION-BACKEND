@@ -1,15 +1,9 @@
-/**
- * SECCION IMPORT
- */
 const express = require('express')
 const CartManager = require('../dao/mongo/cartMongo') 
 const router = express.Router()
 
 
 
-/***
-* RUTAS
-*/
 router.get('/:id', async (req, res) => {
     try{
         res.status(200).send({status: 'succes', payload: await CartManager.getCartById(req.params.id)})

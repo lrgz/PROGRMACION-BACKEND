@@ -6,8 +6,8 @@ const handlebars = require('express-handlebars')
 const { Server } = require('socket.io')
 const productRouter = require('./routers/products')
 const cartRouter = require('./routers/carts')
-const sessionsRouter = require('./routers/sessions')
 const viewsRouter = require('./routers/views')
+const sessionsRouter = require('./routers/sessions')
 
 const socketProduct = require('./utils/socketProducts')
 const socketChat = require('./utils/socketChat')
@@ -16,8 +16,7 @@ const objectConfig = require('./config/config')
 
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
-const FileStore = require('session-file-store')
-const { create } = require('connect-mongo') 
+const mongoStore = require('connect-mongo') 
 
 
 /**
@@ -45,6 +44,7 @@ const severHttp = app.listen(PORT, () => {
 const ioSocket = new Server(severHttp)
 
 app.set('views', __dirname+'/views')
+
 const handlebarsConfig = handlebars.create({
     runtimeOptions:{
         allowProtoPropertiesByDefault: true
@@ -53,25 +53,24 @@ const handlebarsConfig = handlebars.create({
 
 app.engine('handlebars', handlebarsConfig.engine)
 app.set('view engine', 'handlebars')
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/static', express.static(__dirname+'/public'))
-
-
 app.use(cookieParser())
 
 app.use(session({
-    store: create({
-        mongoUrl: "mongodb+srv://userTest:ctrPdIc7sTCimSvx@ecommerce.zaf9sgy.mongodb.net/?retryWrites=true&w=majority",
+    store: mongoStore.create({                   
+        mongoUrl: 'mongodb+srv://userTest:ctrPdIc7sTCimSvx@ecommerce.zaf9sgy.mongodb.net/?retryWrites=true&w=majority',
         mongoOptions: {
             useNewUrlParser: true,
             useUnifiedTopology: true
         },
-        ttl: 1000000,
+        ttl: 3600,
     }),
-    secret: 'test123',
-    resave: false,
-    saveUninitialized: false
+    secret: 'pwd123',
+    resave: true,
+    saveUninitialized: true
 }))
 
 /**
