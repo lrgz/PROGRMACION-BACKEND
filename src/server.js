@@ -6,10 +6,19 @@ const handlebars = require('express-handlebars')
 const { Server } = require('socket.io')
 const productRouter = require('./routers/products')
 const cartRouter = require('./routers/carts')
+const sessionsRouter = require('./routers/sessions')
 const viewsRouter = require('./routers/views')
+
 const socketProduct = require('./utils/socketProducts')
 const socketChat = require('./utils/socketChat')
+
 const objectConfig = require('./config/config')
+
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const FileStore = require('session-file-store')
+const { create } = require('connect-mongo') 
+
 
 /**
  * DEFINO PUERTO DE LA APP
@@ -48,12 +57,30 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/static', express.static(__dirname+'/public'))
 
+
+app.use(cookieParser())
+
+app.use(session({
+    store: create({
+        mongoUrl: "mongodb+srv://userTest:ctrPdIc7sTCimSvx@ecommerce.zaf9sgy.mongodb.net/?retryWrites=true&w=majority",
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
+        ttl: 1000000,
+    }),
+    secret: 'test123',
+    resave: false,
+    saveUninitialized: false
+}))
+
 /**
  * CONFIGURO LA RUTAS
  */
 
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartRouter)
+app.use('/api/sessions', sessionsRouter)
 app.use('/', viewsRouter)
 
 

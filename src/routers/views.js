@@ -16,6 +16,14 @@ const router = express.Router()
 */
 
 
+router.get('/', (req, res) => {
+    if(req.session.user){
+        res.redirect('/products')
+    }else{
+        res.redirect('/login')
+    }
+})
+
 router.get('/realtimeproducts', (req, res) => {
     res.render('realTimeProducts', {})
 })
@@ -84,6 +92,14 @@ router.get('/cart/:cid', async(req,res) => {
     res.render('cart', {status: 'succes', payload: await cartManager.getCartById(req.params.cid)})
 })
 
+
+router.get('/login', async(req, res) => {
+    res.render('login', {})
+})
+
+router.get('/register', async(req, res) => {
+    res.render('register', {})
+})
 
 /***
 * EXPORTS
