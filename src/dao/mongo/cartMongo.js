@@ -45,16 +45,15 @@ class CartManagerMongo{
 
 
     async deleteProductFromCart(cid, pid){
-        const cart = await cartModel.findOne({_id: cid})
-        const indexProduct = cart.products.findIndex((item) => item._id == pid);
-        
+        const cart = await cartModel.findById(cid);        
 
-        if(indexProduct === -1){
+        const listProduct = cart.products.filter((item) => item._id != pid);
+        if(listProduct === -1){
             return null
         }else{
             const filter = { _id: cid };
-            const update = { $pull: { products: { product: pid } } }
-            await cartModel.findOneAndUpdate(filter, update)
+            const update = { products: listProduct  }
+            await cartModel.updateOne(filter, update)
         }
     }
 
@@ -68,13 +67,16 @@ class CartManagerMongo{
     }
 
     async updateQuantity(cid, pid, quantity){
-        const cart = await cartModel.findOne({_id: cid})        
+        
+        const cart = await cartModel.findById(cid);
         const indexProduct = cart.products.findIndex((item) => item._id == pid);
+        
+
 
         if (indexProduct === -1 || quantity < 1) {
             return null
         }else {
-            const filter = { _id: cid, 'products.product': pid };
+            const filter = { _id: cid, 'products._id': pid };
             const update = { $set: { 'products.$.quantity': quantity } };
             await cartModel.updateOne(filter, update);
         }
