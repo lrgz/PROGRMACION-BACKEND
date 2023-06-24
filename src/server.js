@@ -18,6 +18,9 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const mongoStore = require('connect-mongo') 
 
+const passport = require('passport')
+const { initPassport, initPassportGithub } = require('./config/passport')
+
 
 /**
  * DEFINO PUERTO DE LA APP
@@ -72,6 +75,14 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+
+
+
+initPassport()
+initPassportGithub()
+app.use(passport.initialize())
+app.use(passport.session())
+
 
 /**
  * CONFIGURO LA RUTAS
