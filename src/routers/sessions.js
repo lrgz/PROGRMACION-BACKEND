@@ -1,55 +1,51 @@
 const express = require('express')
-const userManager = require('../dao/mongo/userMongo') 
+const passport = require('passport')
+
 
 
 const router = express.Router()
 
-router.post('/register', async (req, res) => {
+router.post('/register', passport.authenticate('register', {failureRedirect:'/failregister'}), async (req, res) => {
     try{
-        let { first_name, last_name, email, password, date_of_birth } = req.body
-
-        if(!first_name || !last_name || !email || !password || !date_of_birth) return res.send({status: 'error', message: 'Some information fields are missing.' })
-    
-        email=email.toLowerCase()
-
-        const existsUser = await userManager.getUserByEmail(email)
-        if(existsUser) return res.send({status: 'error', message: 'The email is already registered.' })
-
-        const rol = (email == 'admincoder@coder.com') ? 'admin' : 'user'        
-        const user = {            
-            first_name,
-            last_name,
-            date_of_birth,
-            email,
-            password,
-            rol
-        }                    
-        
-        await userManager.addUser(user)        
         res.redirect('/login')        
     }catch(error){
         res.status(400).send({status: 'error', message: error.message})
     }
 })
 
-router.post('/login', async (req, res) => {
-    try{
-        const {email, password} = req.body        
+router.get('/failregister', async(req, res) => {
+    res.send({status: 'error', message: 'Failed register'})
+})
 
-        const userDB = await userManager.getUserByLogin(email, password)
-        if (!userDB) return res.send({status: 'error', message: 'The user entered does not exist.'})
+
+router.post('/login',passport.authenticate('login', {failureRedirect:'/faillogin'}), async (req, res) => {
+    try{
+
+        if(!req.user) return res.status(400).send({status: 'error', message: 'Invalid credentials'})
+
+        email=req.user.email.toLowerCase()
+        const rol = (email == 'admincoder@coder.com') ? 'admin' : 'user' 
+
 
         req.session.user = {
-            
-            first_name: userDB.first_name,
-            last_name: userDB.last_name,
-            email: userDB.email,
-            role: userDB.rol
-        }        
-        res.redirect('/products')               
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            email: req.user.email,
+            date_of_birth: req.user.date_of_birth,
+            rol: rol
+        }
+
+        res.redirect('/products')       
+   
+                
     }catch (error){
         res.status(400).send({status: 'error', message: error.message})
     }
+})
+
+
+router.get('/failloing', async(req, res) => {
+    res.send({status: 'error', message: 'Failed login'})
 })
 
 
@@ -58,6 +54,22 @@ router.get('/logout', (req, res)=>{
         if (err) return res.send({status: 'error', message: err})
         res.redirect('/login')
     })
+})
+
+
+router.get('/github', passport.authenticate('github', {scope: ['user:email']}), async (req, res)=>{})
+
+router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res)=>{
+    
+
+    req.session.user = {
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        email: req.user.email,
+        date_of_birth: req.user.date_of_birth,
+        rol :(req.user.email == 'admincoder@coder.com') ? 'admin' : 'user' 
+    }
+    res.redirect('/products')
 })
 
 module.exports = router;
