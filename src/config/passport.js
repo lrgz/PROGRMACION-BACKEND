@@ -1,64 +1,34 @@
 const passport = require('passport')
-const local = require('passport-local')
 const userManager = require('../dao/mongo/userMongo')
-const { createHash, isValidPassword } = require('../utils/bcrypt')
 const GitHubStrategy = require('passport-github2')
+const jwtStrategy = require('passport-jwt')
 
-const LocalStrategy = local.Strategy
+const JWTStrategy = jwtStrategy.Strategy;
+const ExtractJWT = jwtStrategy.ExtractJwt;
+
+const cookieExtractor = req => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies['jwtCookieToken'];
+    }
+    return token;
+};
+
+
 const initPassport = () => {
-    passport.use('register', new LocalStrategy({passReqToCallback: true,usernameField: 'email'},
-    async (req, username, password, done) => {
-        let { first_name, last_name, email, date_of_birth } = req.body
 
-        email=email.toLowerCase()
-        
+    const jwtOptions = {
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: 'SecretKEY',
+    };
+
+    passport.use('current', new JWTStrategy(jwtOptions, async (jwt_payload, done) => {
         try{
-            
-            const existsUser = await userManager.getUserByEmail(username)
-            
-            if(existsUser) return done(null, false)
-
-            const rol = (email == 'admincoder@coder.com') ? 'admin' : 'user'    
-
-            const newUser = {
-                first_name,
-                last_name,
-                date_of_birth,
-                email,
-                password: createHash(password),
-                rol
-            }
-            
-            let result = await userManager.addUser(newUser)
-            return done(null, result)
+            return done(null, jwt_payload.user);
         }catch(error){
-            console.log(error)
-            return done(error)
+            return done(error);
         }
     }))
-
-    passport.use('login', new LocalStrategy({usernameField: 'email'},
-    async(username, password, done) => {
-        const userDB = await userManager.getUserByEmail(username)
-        try{
-            if(!userDB) return done(null, false)
-
-            if(!isValidPassword(password, userDB)) return done(null, false)
-
-            return done(null, userDB)
-        }catch(error){
-            return done(error)
-        }
-    }))
-
-    passport.serializeUser((user, done) => {
-        done(null, user.id)
-    })
-
-    passport.deserializeUser(async (id, done) => {
-        let user = await userManager.getUserById(id)
-        done(null, user)
-    })
 }
 
 const initPassportGithub = () => {

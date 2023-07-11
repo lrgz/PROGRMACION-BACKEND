@@ -1,59 +1,67 @@
 const express = require('express')
 const passport = require('passport')
+const { generateToken } = require('../utils/jwt')
+const userManager = require('../dao/mongo/userMongo')
+const cartModel = require('../dao/mongo/models/cartModel')
+const { createHash, isValidPassword } = require('../utils/bcrypt')
 
 
 
 const router = express.Router()
 
-router.post('/register', passport.authenticate('register', {failureRedirect:'/failregister'}), async (req, res) => {
+
+const authenticateJWT = passport.authenticate('current', { session: false });
+
+router.get('/current', authenticateJWT, (req, res) => {
+    const currentUser = req.user;
+    res.send({ status: 'success', payload: currentUser });
+  });
+
+
+router.post('/register',  async(req, res) => {
+    const { first_name, last_name, email, password, date_of_birth } = req.body
     try{
-        res.redirect('/login')        
-    }catch(error){
-        res.status(400).send({status: 'error', message: error.message})
-    }
-})
+        const user = await userManager.getUserByEmail(email)
+        if(user) return done(null, false)
 
-router.get('/failregister', async(req, res) => {
-    res.send({status: 'error', message: 'Failed register'})
-})
-
-
-router.post('/login',passport.authenticate('login', {failureRedirect:'/faillogin'}), async (req, res) => {
-    try{
-
-        if(!req.user) return res.status(400).send({status: 'error', message: 'Invalid credentials'})
-
-        email=req.user.email.toLowerCase()
-        const rol = (email == 'admincoder@coder.com') ? 'admin' : 'user' 
-
-
-        req.session.user = {
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            email: req.user.email,
-            date_of_birth: req.user.date_of_birth,
-            rol: rol
+        const newUser = {
+            first_name,
+            last_name,
+            date_of_birth,
+            email,
+            password: createHash(password),
+            cart: await cartModel.create({products: []})
         }
-
-        res.redirect('/products')       
-   
-                
-    }catch (error){
-        res.status(400).send({status: 'error', message: error.message})
+        let result = await userManager.addUser(newUser)
+        res.send({status: "success", payload: result});
+    }catch(error){
+        res.send({status: 'error', message: error.message});
     }
 })
 
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body
 
-router.get('/failloing', async(req, res) => {
-    res.send({status: 'error', message: 'Failed login'})
+    const userDB = await userManager.getUserByEmail(email)
+    try{
+
+        if(!userDB) return res.send({status: 'error', message: 'There is not a user with the email: ' + email})
+
+        if(!isValidPassword(userDB, password)) return res.send({status: 'error', message: 'Your user password does not match the entered password'})
+
+        const access_token = generateToken(userDB)
+        res.cookie('jwtCookieToken', access_token, {maxAge: 3600000, httpOnly: true})
+
+        res.send({status: "success", payload: access_token});
+    }catch(error){
+        res.send({status: 'error', message: error.message});
+    }
 })
 
 
 router.get('/logout', (req, res)=>{
-    req.session.destroy(err => {
-        if (err) return res.send({status: 'error', message: err})
-        res.redirect('/login')
-    })
+    res.clearCookie('jwtCookieToken')
+    res.send('Successfully logged out.')
 })
 
 
