@@ -22,7 +22,7 @@ router.post('/register',  async(req, res) => {
     const { first_name, last_name, email, password, date_of_birth } = req.body
     try{
         const user = await userManager.getUserByEmail(email)
-        if(user) return done(null, false)
+        if(user) return  res.send({status: '400', message: error.message});
 
         const newUser = {
             first_name,
