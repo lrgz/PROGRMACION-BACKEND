@@ -1,11 +1,12 @@
 const express = require('express')
 const ProductManager = require('../dao/mongo/productMongo') 
+const { authToken } = require('../utils/jwt')
 const router = express.Router()
 
 
 
 
-router.get('/', async (req, res) => {    
+router.get('/', authToken, async (req, res) => {    
 
     try{
         let query = {}
@@ -44,7 +45,7 @@ router.get('/', async (req, res) => {
 
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authToken,async (req, res) => {
     try{        
 
         const product = await ProductManager.getById(req.params.id)

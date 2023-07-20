@@ -9,14 +9,6 @@ const router = express.Router()
 
 
 
-router.get('/', (req, res) => {
-    if(req.session.user){
-        res.redirect('/products')
-    }else{
-        res.redirect('/login')
-    }
-})
-
 router.get('/realtimeproducts', (req, res) => {
     res.render('realTimeProducts', {})
 })
@@ -25,7 +17,7 @@ router.get('/chat', (req,res) => {
     res.render('chat', {})
 })
 
-router.get('/products', async (req, res) => {
+router.get('/products',  authToken, async (req, res) => {
     try{
         let user = ''
         if(req.session.user){
@@ -87,7 +79,7 @@ router.get('/products', async (req, res) => {
     }
 })
 
-router.get('/cart/:cid', async(req,res) => {
+router.get('/cart/:cid', authToken, async(req,res) => {
     res.render('cart', {status: 'succes', payload: await cartManager.getCartById(req.params.cid)})
 })
 
