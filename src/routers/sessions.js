@@ -33,7 +33,7 @@ router.post('/register',  async(req, res) => {
             cart: await cartModel.create({products: []})
         }
         let result = await userManager.addUser(newUser)
-        res.redirect('/products')
+        res.redirect('/login')
     }catch(error){
         res.send({status: 'error', message: error.message});
     }
@@ -47,12 +47,13 @@ router.post('/login', async (req, res) => {
 
         if(!userDB) return res.send({status: 'error', message: 'There is not a user with the email: ' + email})
 
-        if(!isValidPassword(userDB, password)) return res.send({status: 'error', message: 'Your user password does not match the entered password'})
+        if(!isValidPassword(password,userDB )) return res.send({status: 'error', message: 'Your user password does not match the entered password'})
 
         const access_token = generateToken(userDB)
         res.cookie('jwtCookieToken', access_token, {maxAge: 3600000, httpOnly: true})
 
-        res.send({status: "success", payload: access_token});
+        //res.send({status: "success", payload: access_token});
+        res.redirect('/products')
     }catch(error){
         res.send({status: 'error', message: error.message});
     }
@@ -72,13 +73,12 @@ router.get('/github', passport.authenticate('github', {scope: ['user:email']}), 
 router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res)=>{
     
 
-    req.session.user = {
-        first_name: (req.user.first_name!="")? req.user.first_name : "No informado",
-        last_name: (req.user.last_name!="") ?req.user.last_name : "No informado",
-        email: (req.user.email!="")?req.user.email : "Privado",
-        date_of_birth: (req.user.date_of_birth!="")?req.user.date_of_birth: "No informado",
-        rol :(req.user.email == 'admincoder@coder.com') ? 'admin' : 'user' 
-    }
+    const user = req.user
+    if(!user) return res.status(401).send({status: 'error', message: 'Invalid credentials'})
+
+    const access_token = generateToken(user)
+    res.cookie('jwtCookieToken', access_token)
+    //res.send({status: 'success', payload: access_token})
     res.redirect('/products')
 })
 
